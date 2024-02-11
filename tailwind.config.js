@@ -5,8 +5,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'primary-blue': '#04a7ff',
+      },
+    },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/aspect-ratio'), require('@tailwindcss/forms')],
 }
 

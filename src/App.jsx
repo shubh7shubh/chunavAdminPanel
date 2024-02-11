@@ -3,7 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import { ToastContainer } from 'react-toastify'
 import { BrowserRouter as Router, Routes, Route, createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/dashboard/Dashboard';
+import Reports from './pages/Reports';
 
 function App() {
 
@@ -14,12 +15,12 @@ function App() {
         <Dashboard></Dashboard>
       ),
     },
-    // {
-    //   path: "/products",
-    //   element: (
-    //     <Products />
-    //   ),
-    // },
+    {
+      path: "/reports",
+      element: (
+        <Reports />
+      ),
+    },
   ]);
 
   return (
