@@ -42,7 +42,7 @@ const Sidebar = () => {
                         {isExpanded && <p>Dashboard</p>}
                     </div> */}
                     {/* ${pathName.includes(menuItem.id) && "bg-[#FF730F] rounded-r-[30px]"} */}
-                    <div onClick={() => navigate("/")} className={`flex ${location?.pathname === "/admin" && "bg-gray-400 text-indigo-500"} gap-1 items-center justify-start w-full hover:bg-white hover:text-primary-blue ${isExpanded ? 'text-white' : 'text-white'}`}>
+                    <div onClick={() => navigate("/")} className={`flex ${location?.pathname === "/" && "bg-gray-400 text-indigo-500"} gap-1 items-center justify-start w-full hover:bg-white hover:text-primary-blue ${isExpanded ? 'text-white' : 'text-white'}`}>
                         <div className='p-2'>
                             <FaAddressBook className="w-auto h-6" />
                         </div>
@@ -51,7 +51,7 @@ const Sidebar = () => {
 
 
 
-                    <div onClick={() => navigate("/reports")} className={`flex gap-1 ${location?.pathname === "/admin/orders" ? "bg-gray-400 text-indigo-500" : "bg-primary-blue text-white"} items-center justify-start w-full hover:bg-white hover:text-primary-blue ${isExpanded ? 'text-white' : 'text-white'} `}>
+                    <div onClick={() => navigate("/reports")} className={`flex gap-1 ${location?.pathname === "/reports" ? "bg-gray-400 text-indigo-500" : "bg-primary-blue text-white"} items-center justify-start w-full hover:bg-white hover:text-primary-blue ${isExpanded ? 'text-white' : 'text-white'} `}>
                         <div className='p-2'>
                             {/* <img className="w-auto h-6" src="https://merakiui.com/images/logo.svg" alt="" /> */}
                             <AiOutlineOrderedList className="w-auto h-6 " />

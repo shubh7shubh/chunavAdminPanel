@@ -21,26 +21,49 @@ export const useFirebase = () => useContext(FirebaseContext)
 export const FirebaseProvider = (props) => {
     const firestore = getFirestore(firebaseApp)
 
-    const getDocuments = async () => {
+    // const getDocuments = async () => {
+    //     try {
+    //         const reportsCollectionRef = collection(firestore, 'reports');
+    //         const querySnapshot = await getDocs(reportsCollectionRef);
+
+    //         const data = querySnapshot.docs.map((doc) => ({
+    //             id: doc.id,
+    //             ...doc.data(),
+    //         }));
+
+    //         return data;
+    //     } catch (error) {
+    //         console.error('Error getting documents: ', error);
+    //         throw error;
+    //     }
+    // };
+
+
+    const getReportsWithPosts = async () => {
         try {
             const reportsCollectionRef = collection(firestore, 'reports');
             const querySnapshot = await getDocs(reportsCollectionRef);
 
-            const data = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
+            const reportsWithPosts = await Promise.all(querySnapshot.docs.map(async (reportDoc) => {
+                const reportData = { id: reportDoc.id, ...reportDoc.data() };
+
+                // Fetch the post details using the postId
+                const postDoc = await getDoc(doc(firestore, 'posts', reportData.postId));
+                const postData = postDoc.exists() ? postDoc.data() : null;
+
+                // Combine the reportData with the post data
+                return { ...reportData, post: postData };
             }));
 
-            return data;
+            return reportsWithPosts;
         } catch (error) {
             console.error('Error getting documents: ', error);
             throw error;
         }
     };
-
     const contextValue = {
         firestore,
-        getDocuments,
+        getReportsWithPosts,
     };
     return <FirebaseContext.Provider value={contextValue}>{props.children}</FirebaseContext.Provider>
 }

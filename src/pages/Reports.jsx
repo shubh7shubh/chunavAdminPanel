@@ -1,35 +1,44 @@
 import { useEffect, useState } from "react";
 import { useFirebase } from "../context/firebase";
+import Sidebar from "../components/sidebar/Sidebar";
+import Navbar from "../components/navbar/Navbar";
+import ReportsCard from "../components/cards/ReportsCard";
 
 const Reports = () => {
     const [reportsData, setReportsData] = useState([]);
-    const { getDocuments } = useFirebase();
+    const { getReportsWithPosts } = useFirebase();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await getDocuments();
-                setReportsData(data);
+                const reports = await getReportsWithPosts();
+                setReportsData(reports)
+                console.log("Reports with posts:", reports);
             } catch (error) {
-                console.error('Error fetching data: ', error);
+                console.error("Error fetching reports with posts:", error);
             }
         };
 
         fetchData();
-    }, [getDocuments]);
-
-
-    useEffect(() => {
-        console.log(reportsData, "dsjfhdasfk");
-    }, [reportsData]);
-
+    }, [getReportsWithPosts]);
 
     return (
         <div>
-            <h1 className="font-bold text-2xl text-center my-4">Reports</h1>
-            {reportsData && <div className="flex flex-col justify-center items-center"> {reportsData.map((curElem) => (
-                <div className="my-4" key={curElem.id}>{curElem.id}</div>
-            ))}</div>}
+            <div className='flex h-screen overflow-hidden'>
+                <Sidebar />
+                <div className='relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden'>
+                    <main>
+                        <div className='bg-gray-400'>
+                            <Navbar />
+                            <div>
+                                {reportsData && <div className="flex flex-col justify-center items-center"> {reportsData.map((curElem) => (
+                                    <ReportsCard post={curElem.post} />
+                                ))}</div>}
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
         </div>
     )
 }
