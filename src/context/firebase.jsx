@@ -61,6 +61,9 @@ export const FirebaseProvider = (props) => {
             throw error;
         }
     };
+
+
+
     const contextValue = {
         firestore,
         getReportsWithPosts,

@@ -4,6 +4,7 @@ import Sidebar from "../components/sidebar/Sidebar";
 import Navbar from "../components/navbar/Navbar";
 import ReportsCard from "../components/cards/ReportsCard";
 
+
 const Reports = () => {
     const [reportsData, setReportsData] = useState([]);
     const { getReportsWithPosts } = useFirebase();
@@ -21,6 +22,9 @@ const Reports = () => {
 
         fetchData();
     }, [getReportsWithPosts]);
+
+
+
 
     return (
         <div>
