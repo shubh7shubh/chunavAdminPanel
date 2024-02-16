@@ -37,6 +37,9 @@ import avatar3 from '../../assets/images/images/users/avatar-3.png';
 import avatar4 from '../../assets/images/images/users/avatar-4.png';
 import Sidebar from '../../components/sidebar/Sidebar';
 import Navbar from '../../components/navbar/Navbar';
+import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import { toast } from 'react-toastify';
 
 // avatar style
 const avatarSX = {
@@ -75,6 +78,8 @@ const status = [
 
 const Dashboard = () => {
     const { getDocuments } = useFirebase();
+    const navigate = useNavigate();
+    const [cookies, setCookies] = useCookies(["adminId"]);
     const [value, setValue] = useState('today');
     const [slot, setSlot] = useState('week');
     const [reportsData, setReportsData] = useState([]);
@@ -99,13 +104,21 @@ const Dashboard = () => {
 
 
 
+    useEffect(() => {
+        if (cookies.adminId === undefined) {
+            toast.error("Please Login")
+            navigate('/login')
+        }
+    }, [])
+
+
     return <>
         <div>
             <div className='flex h-screen overflow-hidden'>
                 <Sidebar />
                 <div className='relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden'>
                     <main>
-                        <div className='bg-gray-400'>
+                        <div className='bg-gray-100'>
                             <Navbar />
                             <Grid sx={{ padding: "10px 20px" }} container rowSpacing={4.5} columnSpacing={2.75}>
                                 {/* row 1 */}

@@ -67,7 +67,7 @@ const Navbar = () => {
                                 </form>
 
 
-                                <button className=" hidden bg-primary-blue px-5 py-2 rounded-lg md:flex items-center justify-center gap-3"><FaStoreAlt />Visit My Store</button>
+                                <button className=" hidden bg-primary-blue px-5 py-2 rounded-lg md:flex items-center justify-center gap-3 text-white"><FaStoreAlt />Visit My Store</button>
 
 
                                 <button type="button" className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
@@ -77,9 +77,9 @@ const Navbar = () => {
                                 </button>
                                 <span className="text-black">Sandeep</span>
 
-                                {isAdmin ? (<div onClick={handleLogout} style={{ width: "28px", height: "28px", borderRadius: "50%" }}>
+                                {/* {isAdmin ? (<div onClick={handleLogout} style={{ width: "28px", height: "28px", borderRadius: "50%" }}>
                                     <CiLogout className='w-full h-full cursor-pointer hover:text-primary-blue' />
-                                </div>) : ""}
+                                </div>) : ""} */}
 
                             </div>
 

@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import { initializeApp } from "firebase/app"
 import { getFirestore, doc, getDoc, getDocs, collection } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCN2Q-jQqFJUzpHohPD16CJV4LwKg6nvf8",
@@ -14,31 +15,14 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig)
 
+const auth = getAuth(firebaseApp);
+
 const FirebaseContext = createContext(null)
 
 export const useFirebase = () => useContext(FirebaseContext)
 
 export const FirebaseProvider = (props) => {
     const firestore = getFirestore(firebaseApp)
-
-    // const getDocuments = async () => {
-    //     try {
-    //         const reportsCollectionRef = collection(firestore, 'reports');
-    //         const querySnapshot = await getDocs(reportsCollectionRef);
-
-    //         const data = querySnapshot.docs.map((doc) => ({
-    //             id: doc.id,
-    //             ...doc.data(),
-    //         }));
-
-    //         return data;
-    //     } catch (error) {
-    //         console.error('Error getting documents: ', error);
-    //         throw error;
-    //     }
-    // };
-
-
     const getReportsWithPosts = async () => {
         try {
             const reportsCollectionRef = collection(firestore, 'reports');
@@ -65,6 +49,7 @@ export const FirebaseProvider = (props) => {
 
 
     const contextValue = {
+        auth,
         firestore,
         getReportsWithPosts,
     };
