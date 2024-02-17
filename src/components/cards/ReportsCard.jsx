@@ -26,7 +26,7 @@ const ReportsCard = ({ post, setRefreshReports }) => {
 
             // Step 3: Find the document with the matching postId in 'posts' collection
             const postsCollectionRef = collection(firestore, postsCollectionName);
-            const postsQuerySnapshot = await getDocs(query(postsCollectionRef, where('postId', '==', postIdToDelete)));
+            const postsQuerySnapshot = await getDocs(query(postsCollectionRef, where('post_id', '==', postIdToDelete)));
 
             // Step 4: Delete the document from 'posts' collection
             const deletePostsPromises = postsQuerySnapshot.docs.map(async (postDoc) => {

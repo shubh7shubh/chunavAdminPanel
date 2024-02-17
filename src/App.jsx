@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, createBrowserRouter, RouterProv
 import Dashboard from './pages/dashboard/Dashboard';
 import Reports from './pages/Reports';
 import Login from './pages/Login';
+import Polls from './pages/Polls';
 
 function App() {
 
@@ -27,6 +28,12 @@ function App() {
       path: "/login",
       element: (
         <Login />
+      ),
+    },
+    {
+      path: "/polls",
+      element: (
+        <Polls />
       ),
     },
   ]);

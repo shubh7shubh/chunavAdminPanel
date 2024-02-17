@@ -26,7 +26,7 @@ export const tableStyles = {
         paddingY: 1.5,
     },
     "& .MuiDataGrid-columnHeaders": {
-        bgcolor: "#04a7ff",
+        bgcolor: "#a64143",
         borderRadius: 2,
         color: "white",
     },
