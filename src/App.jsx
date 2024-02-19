@@ -9,6 +9,7 @@ import Reports from './pages/Reports';
 import Login from './pages/Login';
 import Polls from './pages/Polls';
 import News from './pages/News';
+import PhoneVerification from './pages/PhoneVerification';
 
 function App() {
 
@@ -41,6 +42,12 @@ function App() {
       path: "/news",
       element: (
         <News />
+      ),
+    },
+    {
+      path: "/phone-verification",
+      element: (
+        <PhoneVerification />
       ),
     },
   ]);

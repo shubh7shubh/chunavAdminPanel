@@ -1,11 +1,11 @@
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useFirebase } from "../context/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { FcGoogle } from 'react-icons/fc';
+import { FcGoogle, FcPhone } from 'react-icons/fc';
 import { useCookies } from "react-cookie";
 
 const Login = () => {
@@ -46,9 +46,18 @@ const Login = () => {
             {/* Your component content */}
             <button
                 onClick={signInWithGoogle}
-                className="bg-primary-blue text-white py-2 px-4 rounded-md hover: focus:outline-none focus:ring focus:border-blue-300 flex items-center  transition-transform duration-300 ease-in-out transform hover:scale-110"
+                className="bg-primary-blue text-white py-2 px-4 mr-8 rounded-md hover: focus:outline-none focus:ring focus:border-blue-300 flex items-center  transition-transform duration-300 ease-in-out transform hover:scale-110"
             >
                 <FcGoogle className="mr-2" /> Sign In with Google
+            </button>
+
+            {/* Phone Auth Button */}
+            <button
+                onClick={() => navigate('/phone-verification')}
+                className="bg-primary-blue text-white py-2 px-4 mr-8 rounded-md hover: focus:outline-none focus:ring focus:border-blue-300 flex items-center  transition-transform duration-300 ease-in-out transform hover:scale-110"
+
+            >
+                <FcPhone className="mr-2" />   Sign In with Phone
             </button>
         </div>
     );
