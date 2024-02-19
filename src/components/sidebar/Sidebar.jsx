@@ -9,6 +9,7 @@ import { TbBrandProducthunt } from 'react-icons/tb';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { VscReport } from "react-icons/vsc";
+import { FaNewspaper } from "react-icons/fa6";
 
 const Sidebar = () => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -76,6 +77,14 @@ const Sidebar = () => {
                             <FaPoll className="w-auto h-6 " />
                         </div>
                         {isExpanded ? <p className='' >Polls</p> : ""}
+                    </div>
+
+                    <div onClick={() => navigate("/news")} className={`flex gap-1 ${location?.pathname === "/news" ? "bg-gray-100 text-primary-blue" : "bg-primary-blue text-white"} items-center justify-start w-full hover:bg-white hover:text-primary-blue ${isExpanded ? 'text-primary-blue' : 'text-primary-blue'} `}>
+                        <div className='p-2'>
+                            {/* <img className="w-auto h-6" src="https://merakiui.com/images/logo.svg" alt="" /> */}
+                            <FaNewspaper className="w-auto h-6 " />
+                        </div>
+                        {isExpanded ? <p className='' >News</p> : ""}
                     </div>
 
                     <div onClick={handleLogout} className={`flex gap-1 items-center justify-start w-full hover:bg-white hover:text-primary-blue ${isExpanded ? 'text-white' : 'text-white'} `}>
