@@ -361,7 +361,6 @@ const CreatePollModal = ({ buttonText, modalTitle, isPollAdded }) => {
                         {/* </label> */}
 
 
-
                         <div className='flex w-full  gap-4'>
                             <div className='flex flex-col basis-1/2 gap-4'>
                                 <p className='text-md font-semibold'>
@@ -451,7 +450,6 @@ const CreatePollModal = ({ buttonText, modalTitle, isPollAdded }) => {
                                 </select>
                             </div>
                         </div>
-
                         <div className='flex w-full flex-col basis-1/2 gap-4'>
                             <p className='text-md font-semibold'>
                                 Postal:

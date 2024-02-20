@@ -122,45 +122,6 @@ const PhoneVerification = () => {
 
 
     return (
-        // <div className="flex flex-col items-center justify-center mt-8">
-        //     <div id="recaptcha-container" className="mb-4"></div>
-
-        //     {!isCodeSent ? (
-        //         <>
-        //             <label className="mb-2">Enter your phone number:</label>
-        //             <input
-        //                 type="tel"
-        //                 value={phoneNumber}
-        //                 onChange={(e) => setPhoneNumber(e.target.value)}
-        //                 className="mb-4 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-        //             />
-        //             <button
-        //                 onClick={handleSendCode}
-        //                 className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-        //             >
-        //                 Send Verification Code
-        //             </button>
-        //         </>
-        //     ) : (
-        //         <>
-        //             <label className="mb-2">Enter the verification code sent to your phone:</label>
-        //             <input
-        //                 type="text"
-        //                 value={verificationCode}
-        //                 onChange={(e) => setVerificationCode(e.target.value)}
-        //                 className="mb-4 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-        //             />
-        //             <button
-        //                 onClick={handleVerifyCode}
-        //                 className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-        //             >
-        //                 Verify Code
-        //             </button>
-        //         </>
-        //     )}
-
-        //     {error && <p className="text-red-500 mt-4">{error}</p>}
-        // </div>
         <div className="flex flex-col items-center justify-center mt-8">
             <div id="recaptcha-container" className="mb-4"></div>
 
