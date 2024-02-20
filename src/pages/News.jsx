@@ -186,7 +186,7 @@ const News = () => {
                                             className="mt-1 p-2 border ml-4 border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                                         />
                                     </label>
-                                    <FormGroup row>
+                                    {/* <FormGroup row>
                                         <FormControlLabel
                                             control={
                                                 <Checkbox
@@ -205,7 +205,7 @@ const News = () => {
                                             }
                                             label="Video"
                                         />
-                                    </FormGroup>
+                                    </FormGroup> */}
 
 
                                     <button className="px-3 text-white my-4 font-medium justify-center w-full bg-primary-blue rounded-lg py-3 flex space-x-2 items-center transition transform active:scale-95 duration-200" type="submit" disabled={loading}>
