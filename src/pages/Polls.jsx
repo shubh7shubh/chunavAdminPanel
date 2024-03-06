@@ -124,7 +124,8 @@ const Polls = () => {
                     {row?.options.map((option, index) => (
                         <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
                             <div style={{ marginRight: '4px' }}>{String.fromCharCode(65 + index)}.</div>
-                            <Typography variant="body1">{option.text}</Typography>
+                            <Typography variant="body1">{`${option.text} (${option.count})`}</Typography>
+
                         </div>
                     ))}
                 </div>

@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import InputField from '../../InputField';
 import { useFirebase } from '../../../context/firebase';
 import { addDoc, collection, doc, getDocs, setDoc } from 'firebase/firestore';
+import { v4 as uuidv4 } from 'uuid';
 
 
 
@@ -165,7 +166,8 @@ const CreatePollModal = ({ buttonText, modalTitle, isPollAdded }) => {
 
         const pollData = {
             question,
-            options: options.map((text) => ({ text, count: 0 })),
+            // options: options.map((text) => ({ text, count: 0 })),
+            options: options.map((text) => ({ id: uuidv4(), text, count: 0 })),
             country: selectedCountry,
             state: selectedState,
             city: selectedCity,

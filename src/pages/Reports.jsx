@@ -58,7 +58,10 @@ const Reports = () => {
                             <Navbar />
                             <div>
                                 {reportsData && reportsData.length > 0 ? <div className="flex flex-col justify-center items-center"> {reportsData.map((curElem) => (
-                                    <ReportsCard post={curElem.post} setRefreshReports={setRefreshReports} />
+                                    // <ReportsCard post={curElem.post} setRefreshReports={setRefreshReports} />
+                                    curElem.post !== null && (
+                                        <ReportsCard post={curElem.post} setRefreshReports={setRefreshReports} />
+                                    )
                                 ))}</div> : <div className="flex w-screen bg-white h-screen items-center justify-center text-9xl ">
                                     <CircularProgress className="text-3xl" />
                                 </div>}

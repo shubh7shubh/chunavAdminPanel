@@ -49,7 +49,7 @@ const ReportsCard = ({ post, setRefreshReports }) => {
 
 
     return (
-        <div className="min-w-[700px] mx-auto my-5 bg-white rounded-md overflow-hidden shadow-md">
+        <div key={post_id} className="min-w-[700px] mx-auto my-5 bg-white rounded-md overflow-hidden shadow-md">
             {post_video && (
                 <div className="relative h-96">
                     <video
@@ -76,7 +76,7 @@ const ReportsCard = ({ post, setRefreshReports }) => {
                 </span>
             </div>
             <div className="px-6 py-4">
-                <button onClick={() => handleDeleteReport(post_id)} class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                <button onClick={() => handleDeleteReport(post_id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                     Delete
                 </button>
             </div>

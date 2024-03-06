@@ -79,11 +79,43 @@ const News = () => {
     }, [firestore, selectedState]);
 
 
+    // const uploadFile = async () => {
+    //     try {
+    //         setLoading(true);
+
+    //         const storageRef = ref(storage, `news/videos_photos/${file.name}`);
+    //         const uploadTask = uploadBytesResumable(storageRef, file);
+
+    //         // Get a promise to indicate the completion of the upload
+    //         const uploadPromise = new Promise((resolve, reject) => {
+    //             uploadTask.on('state_changed', null, reject, () => {
+    //                 resolve();
+    //             });
+    //         });
+
+    //         await uploadPromise;
+
+    //         const downloadURL = await getDownloadURL(storageRef);
+
+    //         setLoading(false);
+    //         return downloadURL;
+    //     } catch (error) {
+    //         console.error('Error uploading file:', error);
+    //         setLoading(false);
+    //         throw error;
+    //     }
+    // };
+
+
     const uploadFile = async () => {
         try {
             setLoading(true);
 
-            const storageRef = ref(storage, `news/videos_photos/${file.name}`);
+            // Generate a unique filename based on the current timestamp
+            const timestamp = Date.now();
+            const filename = `${timestamp}.mp4`; // You can specify the file extension based on your requirements
+
+            const storageRef = ref(storage, `news/videos_photos/${filename}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
 
             // Get a promise to indicate the completion of the upload
@@ -105,6 +137,7 @@ const News = () => {
             throw error;
         }
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
