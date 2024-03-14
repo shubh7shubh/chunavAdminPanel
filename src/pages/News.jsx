@@ -34,10 +34,14 @@ const News = () => {
     const [contentFormat, setContentFormat] = useState('photo');
 
 
+    if (file) console.log(file, "filesdf")
+
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         setFile(selectedFile);
     };
+
+
 
     // Fetch countries (assuming India is the only country)
     useEffect(() => {
@@ -107,13 +111,47 @@ const News = () => {
     // };
 
 
-    const uploadFile = async () => {
+    // const uploadFile = async () => {
+    //     try {
+    //         setLoading(true);
+
+    //         // Generate a unique filename based on the current timestamp
+    //         const timestamp = Date.now();
+    //         const filename = `${timestamp}.mp4`; 
+
+    //         const storageRef = ref(storage, `news/videos_photos/${filename}`);
+    //         const uploadTask = uploadBytesResumable(storageRef, file);
+
+    //         // Get a promise to indicate the completion of the upload
+    //         const uploadPromise = new Promise((resolve, reject) => {
+    //             uploadTask.on('state_changed', null, reject, () => {
+    //                 resolve();
+    //             });
+    //         });
+
+    //         await uploadPromise;
+
+    //         const downloadURL = await getDownloadURL(storageRef);
+
+    //         setLoading(false);
+    //         return downloadURL;
+    //     } catch (error) {
+    //         console.error('Error uploading file:', error);
+    //         setLoading(false);
+    //         throw error;
+    //     }
+    // };
+
+
+
+    const uploadFile = async (file, isImage) => {
         try {
             setLoading(true);
 
-            // Generate a unique filename based on the current timestamp
+            // Generate a unique filename based on the current timestamp and file type
             const timestamp = Date.now();
-            const filename = `${timestamp}.mp4`; // You can specify the file extension based on your requirements
+            const fileExtension = isImage ? (file.type.includes('png') ? 'png' : 'jpg') : 'mp4';
+            const filename = `${timestamp}.${fileExtension}`;
 
             const storageRef = ref(storage, `news/videos_photos/${filename}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
@@ -138,12 +176,47 @@ const News = () => {
         }
     };
 
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         const downloadURL = await uploadFile();
+
+    //         // Add document to Firestore
+    //         const newsData = {
+    //             state: selectedState,
+    //             district: selectedCity,
+    //             content_format: contentFormat,
+    //             videoOrPhoto: downloadURL,
+    //             creationTime: serverTimestamp(),
+    //         };
+
+    //         await addDoc(collection(firestore, 'news'), newsData);
+
+    //         console.log('News added successfully!');
+    //         toast.success('News added successfully!');
+    //         // Clear input fields
+    //         setSelectedState('');
+    //         setSelectedCity('');
+    //         setFile(null);
+    //     } catch (error) {
+    //         console.error('Error adding news:', error);
+    //     }
+    // };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const downloadURL = await uploadFile();
+            if (!file) {
+                // Handle the case where no file is selected
+                toast.error('No file selected.');
+                return;
+            }
+
+            const isImage = file.type.includes('image');
+            const downloadURL = await uploadFile(file, isImage);
 
             // Add document to Firestore
             const newsData = {
@@ -166,7 +239,6 @@ const News = () => {
             console.error('Error adding news:', error);
         }
     };
-
 
     return (
         <div>
