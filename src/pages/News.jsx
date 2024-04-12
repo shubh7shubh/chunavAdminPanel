@@ -10,6 +10,7 @@ import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { useFirebase } from "../context/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { toast } from "react-toastify";
+import { useCookies } from "react-cookie";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,6 +19,7 @@ import { toast } from "react-toastify";
 const News = () => {
     const storage = getStorage();
     const { firestore, auth } = useFirebase();
+    const [cookies, setCookies] = useCookies(["adminId"]);
 
     const [state, setState] = useState('');
     const [district, setDistrict] = useState('');
@@ -42,6 +44,12 @@ const News = () => {
     };
 
 
+    useEffect(() => {
+        if (cookies.adminId !== "VK8RFWMIEqaewGsYcmyKqN5rUHn2") {
+            toast.error("Please Login")
+            navigate('/login')
+        }
+    }, [])
 
     // Fetch countries (assuming India is the only country)
     useEffect(() => {
@@ -83,66 +91,6 @@ const News = () => {
     }, [firestore, selectedState]);
 
 
-    // const uploadFile = async () => {
-    //     try {
-    //         setLoading(true);
-
-    //         const storageRef = ref(storage, `news/videos_photos/${file.name}`);
-    //         const uploadTask = uploadBytesResumable(storageRef, file);
-
-    //         // Get a promise to indicate the completion of the upload
-    //         const uploadPromise = new Promise((resolve, reject) => {
-    //             uploadTask.on('state_changed', null, reject, () => {
-    //                 resolve();
-    //             });
-    //         });
-
-    //         await uploadPromise;
-
-    //         const downloadURL = await getDownloadURL(storageRef);
-
-    //         setLoading(false);
-    //         return downloadURL;
-    //     } catch (error) {
-    //         console.error('Error uploading file:', error);
-    //         setLoading(false);
-    //         throw error;
-    //     }
-    // };
-
-
-    // const uploadFile = async () => {
-    //     try {
-    //         setLoading(true);
-
-    //         // Generate a unique filename based on the current timestamp
-    //         const timestamp = Date.now();
-    //         const filename = `${timestamp}.mp4`; 
-
-    //         const storageRef = ref(storage, `news/videos_photos/${filename}`);
-    //         const uploadTask = uploadBytesResumable(storageRef, file);
-
-    //         // Get a promise to indicate the completion of the upload
-    //         const uploadPromise = new Promise((resolve, reject) => {
-    //             uploadTask.on('state_changed', null, reject, () => {
-    //                 resolve();
-    //             });
-    //         });
-
-    //         await uploadPromise;
-
-    //         const downloadURL = await getDownloadURL(storageRef);
-
-    //         setLoading(false);
-    //         return downloadURL;
-    //     } catch (error) {
-    //         console.error('Error uploading file:', error);
-    //         setLoading(false);
-    //         throw error;
-    //     }
-    // };
-
-
 
     const uploadFile = async (file, isImage) => {
         try {
@@ -175,34 +123,6 @@ const News = () => {
             throw error;
         }
     };
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-
-    //     try {
-    //         const downloadURL = await uploadFile();
-
-    //         // Add document to Firestore
-    //         const newsData = {
-    //             state: selectedState,
-    //             district: selectedCity,
-    //             content_format: contentFormat,
-    //             videoOrPhoto: downloadURL,
-    //             creationTime: serverTimestamp(),
-    //         };
-
-    //         await addDoc(collection(firestore, 'news'), newsData);
-
-    //         console.log('News added successfully!');
-    //         toast.success('News added successfully!');
-    //         // Clear input fields
-    //         setSelectedState('');
-    //         setSelectedCity('');
-    //         setFile(null);
-    //     } catch (error) {
-    //         console.error('Error adding news:', error);
-    //     }
-    // };
 
 
     const handleSubmit = async (e) => {

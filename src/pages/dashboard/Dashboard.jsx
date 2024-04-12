@@ -105,7 +105,7 @@ const Dashboard = () => {
 
 
     useEffect(() => {
-        if (cookies.adminId === undefined) {
+        if (cookies.adminId !== "VK8RFWMIEqaewGsYcmyKqN5rUHn2") {
             toast.error("Please Login")
             navigate('/login')
         }
