@@ -11,6 +11,7 @@ import { CircularProgress } from "@mui/material";
 
 const Reports = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [cookies, setCookies] = useCookies(["adminId"]);
     const [reportsData, setReportsData] = useState([]);
     const [refreshReports, setRefreshReports] = useState(false);
@@ -20,13 +21,16 @@ const Reports = () => {
 
     useEffect(() => {
         const fetchReports = async () => {
+            setLoading(true);
             try {
                 const reports = await getReportsWithPosts();
                 console.log(reports, "uiuiui")
                 setReportsData(reports);
+                setLoading(false);
                 console.log("Reports with posts:", reports);
             } catch (error) {
                 console.error("Error fetching reports with posts:", error);
+                setLoading(false);
             }
         };
 
@@ -58,8 +62,8 @@ const Reports = () => {
                     <main>
                         <div className='bg-gray-100'>
                             <Navbar />
-                            <div>
-                                {reportsData && reportsData.length > 0 ? <div className="flex flex-col justify-center items-center"> {reportsData.map((curElem) => (
+                            {/* <div>
+                                {loading ? <CircularProgress /> : { reportsData && reportsData.length > 0 ? <div className="flex flex-col justify-center items-center"> {reportsData.map((curElem) => (
                                     curElem.post !== null && (
                                         <ReportsCard post={curElem.post} setRefreshReports={setRefreshReports} by={curElem.by} reasonCounts={curElem.reasonCounts} reportsCount={curElem.reportsCount} reportId={curElem.id} />
                                     )
@@ -67,8 +71,38 @@ const Reports = () => {
                                     <div className="flex flex-col justify-center items-center w-screen h-screen bg-white">
                                         <p className="text-3xl">No reports available</p>
                                     </div>
+                                )}}
+                            </div> */}
+                            <div>
+                                {loading ? (
+                                    <div className="flex  justify-center items-center w-screen h-screen bg-white">
+                                        <CircularProgress size={50} />
+                                    </div>
+
+                                ) : (
+                                    reportsData && reportsData.length > 0 ? (
+                                        <div className="flex flex-col justify-center items-center">
+                                            {reportsData.map((curElem) => (
+                                                curElem.post !== null && (
+                                                    <ReportsCard
+                                                        post={curElem.post}
+                                                        setRefreshReports={setRefreshReports}
+                                                        by={curElem.by}
+                                                        reasonCounts={curElem.reasonCounts}
+                                                        reportsCount={curElem.reportsCount}
+                                                        reportId={curElem.id}
+                                                    />
+                                                )
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col justify-center items-center w-screen h-screen bg-white">
+                                            <p className="text-3xl">No reports available</p>
+                                        </div>
+                                    )
                                 )}
                             </div>
+
                         </div>
                     </main>
                 </div>
