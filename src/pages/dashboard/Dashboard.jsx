@@ -40,6 +40,7 @@ import Navbar from '../../components/navbar/Navbar';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { toast } from 'react-toastify';
+import { doc, getDoc } from 'firebase/firestore';
 
 // avatar style
 const avatarSX = {
@@ -77,39 +78,66 @@ const status = [
 
 
 const Dashboard = () => {
-    const { getDocuments } = useFirebase();
+    const { getDocuments, firestore } = useFirebase();
     const navigate = useNavigate();
     const [cookies, setCookies] = useCookies(["adminId"]);
     const [value, setValue] = useState('today');
     const [slot, setSlot] = useState('week');
     const [reportsData, setReportsData] = useState([]);
+    const [isAdmin, setIsAdmin] = useState(null);
+
+
+    console.log(isAdmin, "skdjkflsdlkq")
+
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const data = await getDocuments();
+    //             setReportsData(data);
+    //         } catch (error) {
+    //             console.error('Error fetching data: ', error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, [getDocuments]);
+
+
+    // useEffect(() => {
+    //     console.log(reportsData, "dsjfhdasfk");
+    // }, [reportsData]);
+
+
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchAdminData = async () => {
             try {
-                const data = await getDocuments();
-                setReportsData(data);
+                const adminId = cookies.adminId;
+                console.log(adminId, "dsfjhkjsdf")
+                if (adminId) {
+                    const userDoc = await getDoc(doc(firestore, 'users', adminId));
+                    const userData = userDoc.data();
+                    const isAdmin = userData?.is_admin || false;
+                    setIsAdmin(isAdmin);
+                } else {
+                    toast.error("Please Login")
+                    navigate('/login');
+                }
             } catch (error) {
-                console.error('Error fetching data: ', error);
+                console.error('Error fetching admin data:', error.message);
             }
         };
 
-        fetchData();
-    }, [getDocuments]);
-
-
-    useEffect(() => {
-        console.log(reportsData, "dsjfhdasfk");
-    }, [reportsData]);
-
-
+        fetchAdminData();
+    }, [cookies.adminId, firestore]);
 
     useEffect(() => {
-        if (cookies.adminId !== "VK8RFWMIEqaewGsYcmyKqN5rUHn2") {
-            toast.error("Please Login")
-            navigate('/login')
+        if (isAdmin === false) {
+            toast.error("Please Login");
+            navigate('/login');
         }
-    }, [])
+    }, [isAdmin]);
+
 
 
     return <>

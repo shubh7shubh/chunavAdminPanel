@@ -16,11 +16,13 @@ const Reports = () => {
     const [refreshReports, setRefreshReports] = useState(false);
     const { getReportsWithPosts } = useFirebase();
 
+    console.log(reportsData, "hhhhhh")
 
     useEffect(() => {
         const fetchReports = async () => {
             try {
                 const reports = await getReportsWithPosts();
+                console.log(reports, "uiuiui")
                 setReportsData(reports);
                 console.log("Reports with posts:", reports);
             } catch (error) {
@@ -28,19 +30,19 @@ const Reports = () => {
             }
         };
 
-        fetchReports(); // Always call fetchReports on mount
+        fetchReports();
 
         if (refreshReports) {
             fetchReports();
-            setRefreshReports(false); // Assuming you want to reset refreshReports after fetching
+            setRefreshReports(false);
         }
 
-        // Include getReportsWithPosts and fetchReports in the dependencies array
+
     }, [getReportsWithPosts, refreshReports]);
 
 
     useEffect(() => {
-        if (cookies.adminId !== "VK8RFWMIEqaewGsYcmyKqN5rUHn2") {
+        if (cookies.adminId === undefined) {
             toast.error("Please Login")
             navigate('/login')
         }
@@ -58,9 +60,8 @@ const Reports = () => {
                             <Navbar />
                             <div>
                                 {reportsData && reportsData.length > 0 ? <div className="flex flex-col justify-center items-center"> {reportsData.map((curElem) => (
-                                    // <ReportsCard post={curElem.post} setRefreshReports={setRefreshReports} />
                                     curElem.post !== null && (
-                                        <ReportsCard post={curElem.post} setRefreshReports={setRefreshReports} />
+                                        <ReportsCard post={curElem.post} setRefreshReports={setRefreshReports} by={curElem.by} reasonCounts={curElem.reasonCounts} reportsCount={curElem.reportsCount} reportId={curElem.id} />
                                     )
                                 ))}</div> : <div className="flex w-screen bg-white h-screen items-center justify-center text-9xl ">
                                     <CircularProgress className="text-3xl" />

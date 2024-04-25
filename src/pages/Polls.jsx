@@ -75,7 +75,7 @@ const Polls = () => {
 
 
     useEffect(() => {
-        if (cookies.adminId !== "VK8RFWMIEqaewGsYcmyKqN5rUHn2") {
+        if (cookies.adminId === undefined) {
             toast.error("Please Login")
             navigate('/login')
         }

@@ -59,8 +59,21 @@ export const FirebaseProvider = (props) => {
                 const postDoc = await getDoc(doc(firestore, 'posts', reportData.postId));
                 const postData = postDoc.exists() ? postDoc.data() : null;
 
-                // Combine the reportData with the post data
-                return { ...reportData, post: postData };
+                // Fetch data from the "by" subcollection
+                const byCollectionRef = collection(reportDoc.ref, 'by');
+                const byQuerySnapshot = await getDocs(byCollectionRef);
+                const byData = byQuerySnapshot.docs.map(doc => doc.data());
+
+
+                // Calculate reason counts
+                const reasonCounts = {};
+                byData.forEach(data => {
+                    const { reason } = data;
+                    reasonCounts[reason] = (reasonCounts[reason] || 0) + 1;
+                });
+
+                // Combine the reportData, post data, and "by" data
+                return { ...reportData, post: postData, by: byData, reasonCounts };
             }));
 
             return reportsWithPosts;
