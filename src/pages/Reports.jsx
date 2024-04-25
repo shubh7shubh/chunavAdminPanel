@@ -63,9 +63,11 @@ const Reports = () => {
                                     curElem.post !== null && (
                                         <ReportsCard post={curElem.post} setRefreshReports={setRefreshReports} by={curElem.by} reasonCounts={curElem.reasonCounts} reportsCount={curElem.reportsCount} reportId={curElem.id} />
                                     )
-                                ))}</div> : <div className="flex w-screen bg-white h-screen items-center justify-center text-9xl ">
-                                    <CircularProgress className="text-3xl" />
-                                </div>}
+                                ))}</div> : (
+                                    <div className="flex flex-col justify-center items-center w-screen h-screen bg-white">
+                                        <p className="text-3xl">No reports available</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </main>

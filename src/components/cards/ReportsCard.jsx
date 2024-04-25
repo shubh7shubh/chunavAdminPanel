@@ -4,10 +4,52 @@ import { useFirebase } from "../../context/firebase";
 import { toast } from "react-toastify";
 
 const ReportsCard = ({ post, setRefreshReports, by, reasonCounts, reportsCount, reportId }) => {
-    const { post_image, post_video, full_add, post_id } = post;
+    const { post_image, post_video, full_add, post_id, post_desc } = post;
     const { firestore } = useFirebase();
 
     console.log(post, "reportsssse")
+
+    // const handleDeleteReport = async (id) => {
+    //     // Assuming 'reports' and 'posts' are the names of the collections
+    //     const reportsCollectionName = 'reports';
+    //     const postsCollectionName = 'posts';
+    //     const postIdToDelete = id;
+
+    //     try {
+    //         // Step 1: Find the document with the matching postId in 'reports' collection
+    //         const reportsCollectionRef = collection(firestore, reportsCollectionName);
+    //         const reportsQuerySnapshot = await getDocs(query(reportsCollectionRef, where('postId', '==', postIdToDelete)));
+
+    //         // Step 2: Delete the document from 'reports' collection
+    //         const deleteReportsPromises = reportsQuerySnapshot.docs.map(async (reportDoc) => {
+    //             await deleteDoc(reportDoc.ref);
+    //             console.log(`Document with postId ${postIdToDelete} deleted from 'reports' collection successfully.`);
+    //         });
+
+    //         // Step 3: Find the document with the matching postId in 'posts' collection
+    //         const postsCollectionRef = collection(firestore, postsCollectionName);
+    //         const postsQuerySnapshot = await getDocs(query(postsCollectionRef, where('post_id', '==', postIdToDelete)));
+
+    //         // Step 4: Delete the document from 'posts' collection
+    //         const deletePostsPromises = postsQuerySnapshot.docs.map(async (postDoc) => {
+    //             await deleteDoc(postDoc.ref);
+    //             console.log(`Document with postId ${postIdToDelete} deleted from 'posts' collection successfully.`);
+    //         });
+
+    //         // Wait for all deletions to complete
+    //         await Promise.all([...deleteReportsPromises, ...deletePostsPromises]);
+
+    //         setRefreshReports(true)
+
+    //         // Display toast after all deletions are complete
+    //         toast("Post deleted successfully");
+    //     } catch (error) {
+    //         console.error(`Error deleting documents: `, error);
+    //         // Handle error or display an error toast
+    //     }
+    // };
+
+
 
     const handleDeleteReport = async (id) => {
         // Assuming 'reports' and 'posts' are the names of the collections
@@ -32,14 +74,31 @@ const ReportsCard = ({ post, setRefreshReports, by, reasonCounts, reportsCount, 
 
             // Step 4: Delete the document from 'posts' collection
             const deletePostsPromises = postsQuerySnapshot.docs.map(async (postDoc) => {
+                // Delete post data from Firestore
                 await deleteDoc(postDoc.ref);
                 console.log(`Document with postId ${postIdToDelete} deleted from 'posts' collection successfully.`);
+
+                // Get the post data
+                const postData = postDoc.data();
+                console.log(postData, "deletePostData")
+
+                // Delete associated image or video from Firebase Storage
+                if (postData.imageURL) {
+                    const imageRef = ref(storage, `images/${postData.imageURL}`);
+                    await deleteObject(imageRef);
+                    console.log(`Image ${postData.imageURL} deleted from Firebase Storage successfully.`);
+                }
+                if (postData.videoURL) {
+                    const videoRef = ref(storage, `videos/${postData.videoURL}`);
+                    await deleteObject(videoRef);
+                    console.log(`Video ${postData.videoURL} deleted from Firebase Storage successfully.`);
+                }
             });
 
             // Wait for all deletions to complete
             await Promise.all([...deleteReportsPromises, ...deletePostsPromises]);
 
-            setRefreshReports(true)
+            setRefreshReports(true);
 
             // Display toast after all deletions are complete
             toast("Post deleted successfully");
@@ -48,6 +107,8 @@ const ReportsCard = ({ post, setRefreshReports, by, reasonCounts, reportsCount, 
             // Handle error or display an error toast
         }
     };
+
+
 
     const handleKeepReport = async (postId) => {
         // Assuming 'reports' is the name of the collection
@@ -80,7 +141,7 @@ const ReportsCard = ({ post, setRefreshReports, by, reasonCounts, reportsCount, 
 
 
     return (
-        <div key={reportId} className="min-w-[700px] my-5 px-10 mx-10  bg-white rounded-md overflow-hidden shadow-md">
+        <div key={reportId} className="min-w-[1500px] max-w-[1500px] my-5 px-10 mx-10  bg-white rounded-md overflow-hidden shadow-md">
             {/* {post_video && (
                 <div className="relative h-96">
                     <video
@@ -102,7 +163,7 @@ const ReportsCard = ({ post, setRefreshReports, by, reasonCounts, reportsCount, 
 
             <div className="px-6 py-4">
                 <span className="font-bold text-xl mb-2">Address:</span>
-                <span className="text-gray-700 text-base ml-2">
+                <span className="text-gray-700 text-base ml-1">
                     {full_add.join(", ")}
                 </span>
             </div>
@@ -143,12 +204,17 @@ const ReportsCard = ({ post, setRefreshReports, by, reasonCounts, reportsCount, 
                 )}
 
                 <div className="flex flex-col">
-                    <p className="border-b-4 pb-3">Total Reports:<span>{reportsCount}</span></p>
+                    <p className="border-b-4 pb-3 font-semibold">Total Reports:<span className="ml-1">{reportsCount}</span></p>
                     <div className="flex gap-7 mt-8 flex-wrap">
                         {Object.entries(reasonCounts).map(([reason, count]) => (
-                            <p key={reason}>{reason}:<span>{count}</span></p>
+                            <p key={reason}>{reason}:<span className="ml-1">{count}</span></p>
                         ))}
                     </div>
+
+                    <div className="my-5">
+                        <p className="font-semibold">Post Content:<span className="ml-1 font-normal">{post_desc}</span></p>
+                    </div>
+
                     <div className="flex gap-10 mt-[120px]">
                         <button className="px-10 py-3 rounded-md text-white bg-green-600" onClick={() => handleKeepReport(post_id)}>Keep</button>
 
