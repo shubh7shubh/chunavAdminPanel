@@ -2,54 +2,13 @@ import React from "react";
 import { doc, deleteDoc, getDocs, collection, query, where, } from 'firebase/firestore';
 import { useFirebase } from "../../context/firebase";
 import { toast } from "react-toastify";
+import { deleteObject, getStorage, ref } from "firebase/storage";
 
 const ReportsCard = ({ post, setRefreshReports, by, reasonCounts, reportsCount, reportId }) => {
     const { post_image, post_video, full_add, post_id, post_desc } = post;
     const { firestore } = useFirebase();
 
     console.log(post, "reportsssse")
-
-    const handleDeleteReport = async (id) => {
-        // Assuming 'reports' and 'posts' are the names of the collections
-        const reportsCollectionName = 'reports';
-        const postsCollectionName = 'posts';
-        const postIdToDelete = id;
-
-        try {
-            // Step 1: Find the document with the matching postId in 'reports' collection
-            const reportsCollectionRef = collection(firestore, reportsCollectionName);
-            const reportsQuerySnapshot = await getDocs(query(reportsCollectionRef, where('postId', '==', postIdToDelete)));
-
-            // Step 2: Delete the document from 'reports' collection
-            const deleteReportsPromises = reportsQuerySnapshot.docs.map(async (reportDoc) => {
-                await deleteDoc(reportDoc.ref);
-                console.log(`Document with postId ${postIdToDelete} deleted from 'reports' collection successfully.`);
-            });
-
-            // Step 3: Find the document with the matching postId in 'posts' collection
-            const postsCollectionRef = collection(firestore, postsCollectionName);
-            const postsQuerySnapshot = await getDocs(query(postsCollectionRef, where('post_id', '==', postIdToDelete)));
-
-            // Step 4: Delete the document from 'posts' collection
-            const deletePostsPromises = postsQuerySnapshot.docs.map(async (postDoc) => {
-                await deleteDoc(postDoc.ref);
-                console.log(`Document with postId ${postIdToDelete} deleted from 'posts' collection successfully.`);
-            });
-
-            // Wait for all deletions to complete
-            await Promise.all([...deleteReportsPromises, ...deletePostsPromises]);
-
-            setRefreshReports(true)
-
-            // Display toast after all deletions are complete
-            toast("Post deleted successfully");
-        } catch (error) {
-            console.error(`Error deleting documents: `, error);
-            // Handle error or display an error toast
-        }
-    };
-
-
 
     // const handleDeleteReport = async (id) => {
     //     // Assuming 'reports' and 'posts' are the names of the collections
@@ -74,31 +33,14 @@ const ReportsCard = ({ post, setRefreshReports, by, reasonCounts, reportsCount, 
 
     //         // Step 4: Delete the document from 'posts' collection
     //         const deletePostsPromises = postsQuerySnapshot.docs.map(async (postDoc) => {
-    //             // Delete post data from Firestore
     //             await deleteDoc(postDoc.ref);
     //             console.log(`Document with postId ${postIdToDelete} deleted from 'posts' collection successfully.`);
-
-    //             // Get the post data
-    //             const postData = postDoc.data();
-    //             console.log(postData, "deletePostData")
-
-    //             // Delete associated image or video from Firebase Storage
-    //             if (postData.post_image) {
-    //                 const imageRef = ref(storage, `posts/${postData.post_image}`);
-    //                 await deleteObject(imageRef);
-    //                 console.log(`Image ${postData.imageURL} deleted from Firebase Storage successfully.`);
-    //             }
-    //             if (postData.post_video) {
-    //                 const videoRef = ref(storage, `posts/${postData.post_video}`);
-    //                 await deleteObject(videoRef);
-    //                 console.log(`Video ${postData.videoURL} deleted from Firebase Storage successfully.`);
-    //             }
     //         });
 
     //         // Wait for all deletions to complete
     //         await Promise.all([...deleteReportsPromises, ...deletePostsPromises]);
 
-    //         setRefreshReports(true);
+    //         setRefreshReports(true)
 
     //         // Display toast after all deletions are complete
     //         toast("Post deleted successfully");
@@ -107,6 +49,66 @@ const ReportsCard = ({ post, setRefreshReports, by, reasonCounts, reportsCount, 
     //         // Handle error or display an error toast
     //     }
     // };
+
+
+
+    const handleDeleteReport = async (id) => {
+        // Assuming 'reports' and 'posts' are the names of the collections
+        const reportsCollectionName = 'reports';
+        const postsCollectionName = 'posts';
+        const postIdToDelete = id;
+
+        try {
+            // Step 1: Find the document with the matching postId in 'reports' collection
+            const reportsCollectionRef = collection(firestore, reportsCollectionName);
+            const reportsQuerySnapshot = await getDocs(query(reportsCollectionRef, where('postId', '==', postIdToDelete)));
+
+            // Step 2: Delete the document from 'reports' collection
+            const deleteReportsPromises = reportsQuerySnapshot.docs.map(async (reportDoc) => {
+                await deleteDoc(reportDoc.ref);
+                console.log(`Document with postId ${postIdToDelete} deleted from 'reports' collection successfully.`);
+            });
+
+            // Step 3: Find the document with the matching postId in 'posts' collection
+            const postsCollectionRef = collection(firestore, postsCollectionName);
+            const postsQuerySnapshot = await getDocs(query(postsCollectionRef, where('post_id', '==', postIdToDelete)));
+
+            // Step 4: Delete the document from 'posts' collection
+            const deletePostsPromises = postsQuerySnapshot.docs.map(async (postDoc) => {
+                // Delete post data from Firestore
+                await deleteDoc(postDoc.ref);
+                console.log(`Document with postId ${postIdToDelete} deleted from 'posts' collection successfully.`);
+
+                // Get the post data
+                const postData = postDoc.data();
+                console.log(postData, "deletePostData")
+                const storage = getStorage();
+
+                // Delete associated image or video from Firebase Storage
+                if (postData.post_image) {
+                    const imageRef = ref(storage, `posts/${postData.post_id}`);
+                    await deleteObject(imageRef);
+                    console.log(`Image ${postData.imageURL} deleted from Firebase Storage successfully.`);
+                }
+                if (postData.post_video) {
+                    const videoRef = ref(storage, `posts/${postData.post_id}`);
+                    await deleteObject(videoRef);
+                    console.log(`Video ${postData.videoURL} deleted from Firebase Storage successfully.`);
+                }
+            });
+
+            // Wait for all deletions to complete
+            await Promise.all([...deleteReportsPromises, ...deletePostsPromises]);
+
+            setRefreshReports(true);
+
+            // Display toast after all deletions are complete
+            toast("Post deleted successfully");
+        } catch (error) {
+            console.error(`Error deleting documents: `, error);
+            // Handle error or display an error toast
+        }
+    };
 
 
 
@@ -141,7 +143,7 @@ const ReportsCard = ({ post, setRefreshReports, by, reasonCounts, reportsCount, 
 
 
     return (
-        <div key={reportId} className="min-w-[1500px] max-w-[1500px] my-5 px-10 mx-10  bg-white rounded-md overflow-hidden shadow-md">
+        <div key={reportId} className="min-w-[1300px] max-w-[1300px] my-5 px-10 mx-10  bg-white rounded-md overflow-hidden shadow-md">
             {/* {post_video && (
                 <div className="relative h-96">
                     <video
