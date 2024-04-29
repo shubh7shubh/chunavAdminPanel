@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { CircularProgress } from "@mui/material";
+import { doc, getDoc } from "firebase/firestore";
 
 
 const Reports = () => {
@@ -15,7 +16,8 @@ const Reports = () => {
     const [cookies, setCookies] = useCookies(["adminId"]);
     const [reportsData, setReportsData] = useState([]);
     const [refreshReports, setRefreshReports] = useState(false);
-    const { getReportsWithPosts } = useFirebase();
+    const [isAdmin, setIsAdmin] = useState(null);
+    const { getReportsWithPosts, firestore } = useFirebase();
 
     console.log(reportsData, "hhhhhh")
 
@@ -45,12 +47,43 @@ const Reports = () => {
     }, [getReportsWithPosts, refreshReports]);
 
 
+    // useEffect(() => {
+    //     if (cookies.adminId === undefined) {
+    //         toast.error("Please Login")
+    //         navigate('/login')
+    //     }
+    // }, [])
+
     useEffect(() => {
-        if (cookies.adminId === undefined) {
-            toast.error("Please Login")
-            navigate('/login')
+        const fetchAdminData = async () => {
+            try {
+                const adminId = cookies.adminId;
+                console.log(adminId, "dsfjhkjsdf")
+                if (adminId) {
+                    const userDoc = await getDoc(doc(firestore, 'users', adminId));
+                    const userData = userDoc.data();
+                    const isAdmin = userData?.is_admin || false;
+                    setIsAdmin(isAdmin);
+                } else {
+                    toast.error("Please Login")
+                    navigate('/login');
+                }
+            } catch (error) {
+                console.error('Error fetching admin data:', error.message);
+            }
+        };
+
+        fetchAdminData();
+    }, [cookies.adminId, firestore]);
+
+    useEffect(() => {
+        if (isAdmin === false) {
+            toast.error("Please Login");
+            navigate('/login');
         }
-    }, [])
+    }, [isAdmin]);
+
+
 
 
 

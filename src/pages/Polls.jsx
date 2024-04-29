@@ -24,7 +24,7 @@ import ConfirmBox, { tableStyles } from "../components/admin/shared/ConfirmDialo
 import { FaArrowDown, FaCartArrowDown } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
 import { useFirebase } from "../context/firebase";
-import { collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 
 const Polls = () => {
     const navigate = useNavigate();
@@ -43,6 +43,7 @@ const Polls = () => {
     const [deletePollState, setDeletePollState] = useState(false);
     const [updatePollState, setUpdatePollState] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(null);
     const { polls, getPolls, firestore } = useFirebase()
 
     // if (polls) console.log(polls, "dfs;jsdlkflk")
@@ -74,12 +75,43 @@ const Polls = () => {
     }, [pollAdded, getPolls, deletePollState, updatePollState]);
 
 
+    // useEffect(() => {
+    //     if (cookies.adminId === undefined) {
+    //         toast.error("Please Login")
+    //         navigate('/login')
+    //     }
+    // }, [])
+
     useEffect(() => {
-        if (cookies.adminId === undefined) {
-            toast.error("Please Login")
-            navigate('/login')
+        const fetchAdminData = async () => {
+            try {
+                const adminId = cookies.adminId;
+                console.log(adminId, "dsfjhkjsdf")
+                if (adminId) {
+                    const userDoc = await getDoc(doc(firestore, 'users', adminId));
+                    const userData = userDoc.data();
+                    const isAdmin = userData?.is_admin || false;
+                    setIsAdmin(isAdmin);
+                } else {
+                    toast.error("Please Login")
+                    navigate('/login');
+                }
+            } catch (error) {
+                console.error('Error fetching admin data:', error.message);
+            }
+        };
+
+        fetchAdminData();
+    }, [cookies.adminId, firestore]);
+
+    useEffect(() => {
+        if (isAdmin === false) {
+            toast.error("Please Login");
+            navigate('/login');
         }
-    }, [])
+    }, [isAdmin]);
+
+
 
     const handleChange = async (selectedStatus, pollId) => {
         console.log(selectedStatus, pollId, "dfahjkfdsakj");

@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, serverTimestamp } from "firebase/firestore";
 import Navbar from "../components/navbar/Navbar"
 import Sidebar from "../components/sidebar/Sidebar"
 
@@ -11,6 +11,7 @@ import { useFirebase } from "../context/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,6 +19,7 @@ import { useCookies } from "react-cookie";
 
 const News = () => {
     const storage = getStorage();
+    const navigate = useNavigate();
     const { firestore, auth } = useFirebase();
     const [cookies, setCookies] = useCookies(["adminId"]);
 
@@ -34,6 +36,7 @@ const News = () => {
     const [file, setFile] = useState(null); // For video/photo file
     const [loading, setLoading] = useState(false);
     const [contentFormat, setContentFormat] = useState('photo');
+    const [isAdmin, setIsAdmin] = useState(null);
 
 
     if (file) console.log(file, "filesdf")
@@ -44,12 +47,43 @@ const News = () => {
     };
 
 
+    // useEffect(() => {
+    //     if (cookies.adminId === undefined) {
+    //         toast.error("Please Login")
+    //         navigate('/login')
+    //     }
+    // }, [])
+
     useEffect(() => {
-        if (cookies.adminId === undefined) {
-            toast.error("Please Login")
-            navigate('/login')
+        const fetchAdminData = async () => {
+            try {
+                const adminId = cookies.adminId;
+                console.log(adminId, "dsfjhkjsdf")
+                if (adminId) {
+                    const userDoc = await getDoc(doc(firestore, 'users', adminId));
+                    const userData = userDoc.data();
+                    const isAdmin = userData?.is_admin || false;
+                    setIsAdmin(isAdmin);
+                } else {
+                    toast.error("Please Login")
+                    navigate('/login');
+                }
+            } catch (error) {
+                console.error('Error fetching admin data:', error.message);
+            }
+        };
+
+        fetchAdminData();
+    }, [cookies.adminId, firestore]);
+
+    useEffect(() => {
+        if (isAdmin === false) {
+            toast.error("Please Login");
+            navigate('/login');
         }
-    }, [])
+    }, [isAdmin]);
+
+
 
     // Fetch countries (assuming India is the only country)
     useEffect(() => {
