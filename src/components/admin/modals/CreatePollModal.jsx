@@ -174,9 +174,11 @@ const CreatePollModal = ({ buttonText, modalTitle, isPollAdded }) => {
             postal: selectedPostalCode,
             status,
             poll_id: newPollRef.id,
+            created_by: cookies.adminId,
+            created_at: new Date()
         };
 
-        console.log(pollData, "dlkfjsdkljfklsjfdlsl");
+        console.log(pollData, "pooooooooooo");
 
         try {
             setLoading(true);
