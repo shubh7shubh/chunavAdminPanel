@@ -25,6 +25,7 @@ import { FaArrowDown, FaCartArrowDown } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
 import { useFirebase } from "../context/firebase";
 import { collection, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 const Polls = () => {
     const navigate = useNavigate();
@@ -251,27 +252,64 @@ const Polls = () => {
     ];
 
 
+    // const deletePoll = async () => {
+    //     setDeleteLoading(true);
+    //     const pollsCollectionName = 'polls';
+    //     const pollIdToDelete = deleteId;
+    //     console.log(pollIdToDelete, "pollIdToDelete")
+    //     try {
+
+    //         const pollsCollectionRef = collection(firestore, pollsCollectionName);
+    //         const pollsQuerySnapshot = await getDocs(query(pollsCollectionRef, where('poll_id', '==', pollIdToDelete)));
+
+    //         const deletePollsPromises = pollsQuerySnapshot.docs.map(async (reportDoc) => {
+    //             await deleteDoc(reportDoc.ref);
+    //             console.log(`Document with pollsId ${pollIdToDelete} deleted from 'polls' collection successfully.`);
+    //         });
+    //         // Wait for all deletions to complete
+    //         await Promise.all([...deletePollsPromises]);
+    //         toast.success("Poll Deleted Successfully")
+    //         setDeletePollState(true)
+    //         setDeleteLoading(false);
+    //         setDeleteOpen(false);
+
+
+    //     } catch (error) {
+    //         console.error(`Error deleting documents: `, error);
+    //         setDeleteLoading(false);
+    //         // Handle error or display an error toast
+    //     }
+    // }
+
+
+
+    const functions = getFunctions();
+    const deleteDocumentRecursively = httpsCallable(functions, 'deleteDocumentRecursively');
+
+
     const deletePoll = async () => {
         setDeleteLoading(true);
         const pollsCollectionName = 'polls';
         const pollIdToDelete = deleteId;
-        console.log(pollIdToDelete, "pollIdToDelete")
+        console.log(pollIdToDelete, "pollIdToDelete");
         try {
-
             const pollsCollectionRef = collection(firestore, pollsCollectionName);
             const pollsQuerySnapshot = await getDocs(query(pollsCollectionRef, where('poll_id', '==', pollIdToDelete)));
 
-            const deletePollsPromises = pollsQuerySnapshot.docs.map(async (reportDoc) => {
-                await deleteDoc(reportDoc.ref);
-                console.log(`Document with pollsId ${pollIdToDelete} deleted from 'polls' collection successfully.`);
+            const deletePollsPromises = pollsQuerySnapshot.docs.map(async (pollDoc) => {
+                const pollDocRef = pollDoc.ref;
+                // Call Cloud Function using httpsCallable
+                await deleteDocumentRecursively({ documentPath: pollDocRef.path });
+                console.log(`Document with pollsId ${pollIdToDelete} deleted from 'polls' collection and its subcollections successfully.`);
             });
+
             // Wait for all deletions to complete
             await Promise.all([...deletePollsPromises]);
-            toast.success("Poll Deleted Successfully")
-            setDeletePollState(true)
+
+            toast.success("Poll Deleted Successfully");
+            setDeletePollState(true);
             setDeleteLoading(false);
             setDeleteOpen(false);
-
 
         } catch (error) {
             console.error(`Error deleting documents: `, error);
@@ -279,7 +317,6 @@ const Polls = () => {
             // Handle error or display an error toast
         }
     }
-
 
     return (
         <div>
