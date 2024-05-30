@@ -5,6 +5,7 @@ import { AiOutlineOrderedList } from 'react-icons/ai';
 import { BiSolidCoupon, BiSolidUser } from 'react-icons/bi';
 import { FaArrowRight, FaArrowLeft, FaAddressBook, FaPoll } from 'react-icons/fa'; // Import arrow icons from react-icons
 import { MdAnalytics, MdInventory, MdOutlineSettings } from 'react-icons/md';
+import { MdOutlinePayments } from "react-icons/md";
 import { TbBrandProducthunt } from 'react-icons/tb';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -86,6 +87,14 @@ const Sidebar = () => {
                         </div>
                         {isExpanded ? <p className='' >News</p> : ""}
                     </div>
+
+                    <div onClick={() => navigate("/sponsor")} className={`flex gap-1 ${location?.pathname === "/sponsor" ? "bg-gray-100 text-primary-blue" : "bg-primary-blue text-white"} items-center justify-start w-full hover:bg-white hover:text-primary-blue ${isExpanded ? 'text-primary-blue' : 'text-primary-blue'} `}>
+                    <div className='p-2'>
+                        {/* <img className="w-auto h-6" src="https://merakiui.com/images/logo.svg" alt="" /> */}
+                        <MdOutlinePayments className="w-auto h-6 " />
+                    </div>
+                    {isExpanded ? <p className='' >Sponsor</p> : ""}
+                </div>
 
                     <div onClick={handleLogout} className={`flex gap-1 items-center justify-start w-full hover:bg-white hover:text-primary-blue ${isExpanded ? 'text-white' : 'text-white'} `}>
                         <div className='p-2'>
